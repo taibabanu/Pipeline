@@ -6,7 +6,6 @@ sheet = wb.active
 info_type_list = ["header","uut","test_information"]
 for info_type in info_type_list:
     tag_name = p1.getElementsByTagName(info_type)
-    #print(tag_name)
     for node in tag_name:
         alist = node.getElementsByTagName('br')
         for i in range(0, len(alist), 2):
