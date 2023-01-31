@@ -1,8 +1,10 @@
 import os
-from typing import List
 import xml.etree.ElementTree as ET
 from datetime import datetime
+from typing import List
+
 import openpyxl
+
 
 class TestCaseDetailsParser:
     """
@@ -38,24 +40,26 @@ class TestCaseDetailsParser:
         """
         tree = ET.parse(self.file_path)
         root = tree.getroot()
-        data_list = [["Name", "Info Type", "Header Name","Header value"]]
-        for tc_spec in root.findall('test_case_specification'):
-            test_case_details = tc_spec.find('test_case_specification_details').attrib
-            for each_type in ['header', 'uut']:
+        data_list = [["Name", "Info Type", "Header Name", "Header value"]]
+        for tc_spec in root.findall("test_case_specification"):
+            test_case_details = tc_spec.find("test_case_specification_details").attrib
+            for each_type in ["header", "uut"]:
                 tag = tc_spec.find(each_type)
-                for each_tr in tag.findall('tr'):
+                for each_tr in tag.findall("tr"):
                     temp_list = list()
-                    temp_list.append('')
+                    temp_list.append("")
                     temp_list.append(each_type)
                     for each_td in each_tr.findall("td"):
-                        value = each_td.find('br').text
-                        if value and value.startswith('tcs'):
+                        value = each_td.find("br").text
+                        if value and value.startswith("tcs"):
                             tc_name = value
                         temp_list.append(value)
                     temp_list[0] = tc_name
                     data_list.append(temp_list)
             for key in test_case_details:
-                data_list.append([tc_name, "test_case_details", key, test_case_details[key]])
+                data_list.append(
+                    [tc_name, "test_case_details", key, test_case_details[key]]
+                )
         self._write_to_excel(data_list)
 
     def _write_to_excel(self, data_list: List) -> None:
@@ -79,6 +83,8 @@ class TestCaseDetailsParser:
             row += 1
         current_time = datetime.now().strftime("%Y-%m-%d-%H%M%S")
         wb.save(
-            os.path.join(os.getcwd().rsplit("\\", 1)[0], f"outputs\extracted_xml{current_time}.xls")
+            os.path.join(
+                os.getcwd().rsplit("\\", 1)[0],
+                f"outputs\extracted_xml{current_time}.xls",
+            )
         )
-
